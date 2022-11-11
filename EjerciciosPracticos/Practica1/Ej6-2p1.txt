@@ -1,0 +1,21 @@
+     ORG 1000H   ; Memoria de datos
+     NUM1 DW 5H
+     NUM2 DW 3H
+     RES DW ?
+
+ ORG 3000H    ; SubRutina mul
+MUL: MOV DX, 0 ; REGISTRO ACUMULADOR
+     CMP CL, 0 ; COMPARO PARA NO MULTIPLICAR POR 0
+     JZ FIN
+     MOV AH, 0 ; PONGON LA PARTE DE ARRIBA EN CERO
+LAZO:ADD DX, AX
+     DEC CL
+     JNZ LAZO
+FIN: RET
+
+     ORG 2000H   ; Prog principal      ; parámetros 
+     MOV  AL, NUM1
+     MOV  CL, NUM2
+CALL MUL         ; desapilar parámetros
+     HLT
+END     

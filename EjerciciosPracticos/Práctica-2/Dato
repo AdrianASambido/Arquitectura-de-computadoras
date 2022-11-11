@@ -1,0 +1,6 @@
+public Optional<Email> buscar(String texto) {
+    return this.contenido.stream()
+        .map(c -> c.devolverMail(texto)
+        .filter(Optional::isPresent)
+        .findFirst();
+}

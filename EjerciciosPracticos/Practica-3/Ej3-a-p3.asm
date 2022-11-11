@@ -1,0 +1,29 @@
+;a) * Escribir un programa que imprime “INGENIERIA E INFORMATICA” en la impresora a través del
+;  HAND-SHAKE. La comunicación se establece por consulta de estado (polling). ¿Qué diferencias
+;  encuentra con el ejercicio 2b?
+DATOS_HAND  EQU 40H
+ESTADO_HAND EQU 41H
+
+ORG 1000H
+	MSJ DB "SOMOS UNOS CAP05"
+	FIN DB ?
+	
+ORG 2000H
+	; CONFIGURAMOS HANDSHAKE POR CONSILTA DE ESTADO (BIT 7 EN 1 POR INTERRUPCION O EN 0 PARA CONSULTA DE ESTADO)
+	MOV AL, 01111111B
+	OUT ESTADO_HAND, AL
+	; MANDAMOS EL MENSAJE
+	MOV BX, OFFSET MSJ
+		
+	POLL: IN AL, ESTADO_HAND ; CONSULTAMOS EL ESTADO DE LA IMPRESORA
+				AND AL, 00000001B
+				JNZ POLL
+			; MANDAMOS LOS DATOS	
+				MOV AL, [BX]
+				OUT DATOS_HAND, AL 
+				
+				INC BX
+				CMP BX, OFFSET FIN
+				JNZ POLL
+		INT 0
+END		

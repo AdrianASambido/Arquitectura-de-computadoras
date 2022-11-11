@@ -1,0 +1,36 @@
+ ;10 interrupciones por hardware: tecla F10
+ ;Escriba un programa que mientras se ejecuta un lazo infinito 
+ ;cuente el nùmero de veces que se precuiona la tecla F10
+ 
+ 
+EOI  EQU 20H
+IMR  EQU 21H
+INT0 EQU 24H 
+
+ORG 3000H ; PASO 1 : SUBRUTINA QUE ATIENDE INTERRUPCIONES
+ TECLAF10: INC DL
+	MOV AL,20H
+	OUT EOI, AL
+	IRET
+	
+ORG 2000H
+ MOV AX, TECLAF10
+ MOV BX, 40
+ MOV [BX], AX
+ 
+	CLI
+		MOV AL, 11111110B  ;  PARA DECIRLE AL IMR QUE ATIENDA SOLAMENTE LA TECLA F10
+	OUT IMR, AL ; IMR = 11111110 <-- SOLO ATIENDE
+	;AHORA LA TECLA F10 ESTA ASOCIADA EN EL ID = 10
+	MOV AL, 10
+	OUT INT0, AL
+		
+	STI
+	
+	MOV DL, 0
+	
+	LOOP: JMP LOOP 
+	
+	INT 0
+	END
+	

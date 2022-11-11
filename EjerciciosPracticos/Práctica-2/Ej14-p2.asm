@@ -1,0 +1,83 @@
+; 14) * Implementar un reloj similar al utilizado en los 
+;partidos de básquet, que arranque y detenga su marcha 
+;al presionar sucesivas veces la tecla F10 y que finalice 
+;el conteo al alcanzar los 30 segundos.
+CONT EQU 10H
+COMP EQU 11H
+EOI  EQU 20H
+IMR  EQU 21H
+INT0 EQU 24H
+INT1 EQU 25H
+
+ORG 4000H    ;SUB RUTINA DEL F10
+ SUB_F10:IN AL, IMR ; TOMAMOS EL VALOR ACTUAL DEL IMR
+  XOR AL, 00000010B ; DESHABILITAMOS EL BIT DEL TIMER 
+  OUT IMR, AL   
+  MOV AL, 20H   ; AVISAMOS QUE LA SUBRUTINA FUE ATENDIDA
+  OUT EOI, AL
+ IRET
+ 
+ 
+ORG 3000H    ;SUB RUTIN DEL TIMER
+ SUB_TIMER: CMP UNID, 39H  ; COMPRAMOS CON 9
+  JZ DECENA
+  INC UNID
+  JMP RESET ; MANDAMOS A IMPRIMIR
+  DECENA: MOV UNID, 30H
+  INC DECE
+  CMP DECE, 33H
+  JNZ RESET
+  MOV AH, 2 ; CONDICION DE FINAL DEL PROGRAMA
+  JMP CHAU
+  RESET: MOV AL, OFFSET FINAL - OFFSET DECE; PRIMERO IMPRIME
+  INT 7
+  MOV AL, 0
+  OUT CONT, AL
+CHAU:MOV AL, 20H ; AVISAMOS QUE LA SUBRUTINA FUE ATENDIDA
+  OUT EOI, AL
+IRET
+  
+ORG 1000H
+ DECE DB 30H
+ UNID DB 30H
+ ESPACIO DB " "
+ FINAL   DB ?
+  
+ORG 2000H
+ MOV AX, SUB_TIMER ; CARGAMOS EN EL VECTO DE INT LA SUB DEL TIMER
+ MOV BX, 40
+ MOV [BX], AX
+ 
+ MOV AX, SUB_F10 ; CARGAMOS EN EL VECTO DE INT LA SUB DEL F10
+ MOV BX, 100
+ MOV [BX], AX
+ 
+ CLI
+  ; CONFIGURAMOS LAS INTERRUPCIONES QUE SE ATENDERAN
+  ;---------------------------------------
+  MOV AL, 11111100B   
+  OUT IMR, AL
+  ; CARGAMOS LOS ID DE CADA INTERRUPCION
+  ;----------------------------------------
+  MOV AL, 10
+  OUT INT1, AL ; ID TIMER
+  
+  MOV AL, 25
+  OUT INT0, AL ; ID F10
+  ;----------------------------------------
+  ; CONFIGURAMOS EL TIMER
+  ;----------------------------------------
+  MOV AL, 1
+  OUT COMP, AL
+  
+  MOV AL, 0
+  OUT CONT, AL
+  ;-----------------------------------------
+ STI
+ 
+  MOV BX, OFFSET DECE ;INICIO DE LA IMPRESION
+  MOV AH, 0
+ SALTO: CMP AH, 2
+  JNZ SALTO
+ INT 0
+END
