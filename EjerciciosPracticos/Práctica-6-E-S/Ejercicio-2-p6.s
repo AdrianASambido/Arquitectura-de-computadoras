@@ -10,21 +10,22 @@
 
 .data
 vector: .word "cero","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve"
-control: .word 0x10000
-data: .word 0x10008
+control: .word32 0x10000
+data: .word32 0x10008
 
 .code
 ;declaramos los registros
-ld $s0,control($zero)
-ld $s1,data($zero)
+lwu $s0,control($zero)
+lwu $s1,data($zero)
 
 ;declaramos la pila (para guardar valores de subrutina)
 daddi $sp,$zero,0x400
 
 loop: jal sub_ingreso
     ;le mandamos el caracter a nuestra otra subrutina
-    dadd $a0,$zero,$v0 ;ahora nuestro argumento para la subrutina muestro, vale lo que tenía el retorno
-                        ;de la anterior
+    dadd $a0,$zero,$v0 ;ahora nuestro argumento para la subrutina
+     ;de la anterior muestro, vale lo que tenía el retorno
+                        
     jal muestra
     j loop
 halt
@@ -32,25 +33,27 @@ halt
 ;subrutina ingreso
 ;-------------------------------------------------------------------
         ;INGRESAMOS NUMERO
-sub_ingreso: daddi $t0,$zero,1 ;para el ingreso de numeros con signo
+sub_ingreso: daddi $t0,$zero,1 ;para el ingreso de numeros sin signo
     sd $t0,0($s0) ;le decimos a control que ingrese el numero
 
     ;NOS GUARDAMOS NUMERO
-    lb $s1,0(s2) ;s2 = nuestro numero leido esta en Data
+    lb $s2,0($s1) ;s2 = nuestro numero leido esta en Data
 
     ;CORROBORAMOS SI ES UN NUMERO
-    es_num: slti $t0,$s2,0x30 ;compara si es menor a 0
-        bnez $t0, fin
-        slti $t0,$s2,0x3a ;compara si es menor al siguiente de 9
-        beqz $0, fin
-        
+    es_num: slti $t0,$s2,30h ;compara si es menor a 0
+        bnez $t0, no_es
+        slti $t0,$s2,3ah ;compara si es menor al siguiente de 9
+        beqz $t0, no_es
+
         ;si es un numero, lo retorna
         dadd $v0,$zero,$s2
+        j fin
+        no_es: daddi $v0 $zero, 0
     fin: jr $ra
 
 ;subrutina muestro
 ;------------------------------------------------------------------
-sub_muestro: daddi $t0,$zero,8 ;indicamos a control que se imprime un número
+sub_muestra: daddi $t0,$zero,8 ;indicamos a control que se imprime un número
     
     daddi $t1,$zero,9 ;inicializamos registro auxiliar en 9 para decrementar posiciones
     daddi $t2,$zero,0x30 ;inicializamos en 0 - 30h para comparar

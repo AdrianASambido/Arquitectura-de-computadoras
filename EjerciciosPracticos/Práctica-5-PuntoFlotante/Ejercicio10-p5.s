@@ -1,5 +1,6 @@
-;10) Usando la subrutina escrita en el ejercicio anterior, escriir la subrutina CONTAR_VOC, 
-;que recibe una cadena terminada en cero y devuelve la cantidad de vocales que tiene esa cadena.
+;10) Usando la subrutina escrita en el ejercicio anterior, escribir la subrutina
+;    CONTAR_VOC, que recibe una cadena terminada en cero y devuelve la cantidad
+;     de vocales que tiene esa cadena.
 
 .data
 cadena: .asciiz "somos unos capos" ; 6 vocales
@@ -19,12 +20,12 @@ daddi $a1,$zero,vocales
 jal contarVoc
 
 ;retorno subrutina
-sd $v0,resultado($zero)
+sd $v1,resultado($zero)
 halt
 
 ;subrutina que cuenta las vocales
-contarVoc: daddi $sp,$sp,-8 ;reservamos valor en la pila
-	sd $ra,0($sp) ;guardamos la direccion de retorno de la subrutina
+contarVoc: daddi $sp,$sp,-8 ;reservamos lugar en la pila
+	  sd $ra,0($sp) ;guardamos la direccion de retorno de la subrutina
     dadd $v0,$zero,$zero ;inicializamos contador de vocales
     ;subrutina
   lazo: lbu $a2,0($a0) ;copiamos valor de nuestra cadena

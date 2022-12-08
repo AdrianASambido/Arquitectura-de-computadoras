@@ -6,7 +6,7 @@ tabla2: .word  7, 7,  7, 7, 7,  7,  7, 7,  7, 7
 long: .word 10
        .code
        lwu $s0, DATA($zero)   ;Carga data en $s0
-       lwu $s1, CONTROL($zero);carga control
+       lwu $s1, CONTROL($zero);carga control $s1
        dadd $t2, $zero, $zero
        daddi $t5, $zero, 1
        ld $t0, long($zero)

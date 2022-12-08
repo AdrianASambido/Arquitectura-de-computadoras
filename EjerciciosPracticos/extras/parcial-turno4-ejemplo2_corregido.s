@@ -5,8 +5,7 @@ tabla: .word 20, 1, 14, 7, 2, 58, 18, 7, 12, 11
 num: .word 7    ; elemneto a buscar
 long: .word 10  ; longitud
        .code
-       lwu $s0, DATA($zero)     ; carga DATA en $s0
-       
+       lwu $s0, DATA($zero)     ; carga DATA en $s0 
        lwu $s1, CONTROL($zero)  ; carga control en $s1
 
        dadd $t2, $zero, $zero   ;inicializa $t2 en cero indice para recorrertabla

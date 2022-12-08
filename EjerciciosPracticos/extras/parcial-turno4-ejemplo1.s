@@ -13,5 +13,5 @@ loop:  ld $t3, tabla($t2)       ; carga en $t3 la direccion de la tabla
        daddi $t4, $t4, 1        ; incrementa $t4 
 sigo:  daddi $t0, $t0, -1       ; decrementa $t0
        daddi $t2, $t2, 8        ; avanza en la posicion de la tabla
-       bnez $t0, loop           ; compar con 0 para salir del loop
+       bnez $t0, loop           ; compara con 0 para salir del loop
        halt
