@@ -12,7 +12,7 @@ sd $t0, 0($s1)        ; cargamos en DATA el dato almacenado en $t0
 
 daddi $t0, $zero, 2  ; cargamos en un temporal la instruccion para CONTROL
 sd $t0, 0($s0)        ; cargamos en control la instruccion
-; Ejecutarlo paso  paso porque sino la ultima instruccion boora el -85
+; Ejecutarlo paso  paso porque sino la ultima instruccion borra el -85
 daddi $t0, $zero, 6
 sd $t0, 0($s0)
 halt
